@@ -1,12 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, ImageComponent } from 'react-native';
-import useFetch from '../llamarApis/useFetch'; // Ajusta la ruta según sea necesario
 
 const posts = () => {
-  const { data: photosData, loading: photosLoading, error: photosError } = useFetch('https://api.unsplash.com/photos/random?query=landscape&count=3&client_id=B0oSuy4BO0YCc-KSgo2YqiK7c5eISRjZlPbiiF8zgiA');
-
-  const { data: userData, loading: userLoading, error: userError } = useFetch('https://randomuser.me/api');
-
+  
   const imageUrl = photosData && photosData.length > 0 ? photosData[0].urls.small : null;
 
  // console.log('User Loading:', userLoading);

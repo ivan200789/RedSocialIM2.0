@@ -3,7 +3,6 @@ import { Text, TextInput, View, TouchableOpacity, Button, StyleSheet, ScrollView
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Permissions } from 'expo';
 import { Entypo } from '@expo/vector-icons';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 export default function textfield(){
     const [text, setText] = useState("")
@@ -14,7 +13,7 @@ export default function textfield(){
 
     return(
         <ScrollView style={{
-            marginTop:70,
+            marginTop:"auto",
             backgroundColor: "#fff",
             height:"100%"
         }}>

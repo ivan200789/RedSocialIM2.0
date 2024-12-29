@@ -1,33 +1,46 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, Platform, StatusBar } from 'react-native';
+import { Box, Text } from 'native-base';
 
 const Header = ({ title }) => {
   return (
-    <View style={styles.header}>
-      <Text style={styles.headerTitle}>{title}</Text>
-    </View>
+    <Box style={styles.header}>
+      <Text 
+        color="black" 
+        fontSize="4xl" 
+        fontWeight="bold" 
+        style={styles.text} 
+        numberOfLines={1} 
+        ellipsizeMode="tail" 
+      > 
+        {title} 
+      </Text>
+    </Box>
   );
 };
 
+// ... (código existente)
+
 const styles = StyleSheet.create({
   header: {
-    borderRadius:13,
-    width: '100%',
-    height: 75,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    position: 'absolute', // Fija el encabezado en una posición absoluta
-    top: 0, // Lo coloca en la parte superior de la pantalla
-    zIndex: 100, // Asegura que esté por encima de otros componentes
+    height: 75,
+    backgroundColor: '#fff', // Fondo gris claro
+    borderBottomColor: '#d0d3d4', // Línea divisoria gris más claro
+    shadowColor: '#000', // Sombra negra
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    borderRadius: 15,
+    elevation: 5, // Para Android
+    paddingHorizontal: 20, // Agrega espacio horizontal interno
+    marginBottom: 10, // Agrega espacio inferior
   },
-  headerTitle: {
+  text: {
+    marginTop:8,
+    textAlign:"center",
+    fontFamily: 'Montserrat', // Cambia la fuente
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginTop:0
   },
 });
 

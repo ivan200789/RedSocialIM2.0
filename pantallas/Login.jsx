@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Box, Input, Text, Button, VStack, Pressable } from "native-base";
+import React, { useState, useContext } from "react";
+import { Box, Input, Text, Button, VStack, Pressable, HStack, CheckIcon, Alert } from "native-base";
 import Wave from "../assets/Wave"; // Asegúrate de que la ruta a la ola sea correcta
 import {
   Platform,
@@ -8,30 +8,47 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from "react-native";
+import { useAppContext } from "../Context/StateComp"; // Asegúrate de que la ruta es correcta
+import AntDesign from '@expo/vector-icons/AntDesign';
+
+import { registrarUsuario } from "../firebase/firebase";
 
 export default function Login({ navigation }) {
-  const [nombre, setNombre] = useState('');
+
+  const {setUsuario } = useAppContext(); 
+  const [nombre, setNombreInput] = useState('');  
+
+  const [gmail, setGmail] = useState('');  
+
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleLogin = () => {
-    const isPasswordValid = validarContraseña(password);
-
-    if (!isPasswordValid) {
-      setPasswordError(
-        `La contraseña debe cumplir los siguientes requisitos:
-        * Contener al menos 8 caracteres.
-        * Incluir al menos una letra minúscula.
-        * Incluir al menos una letra mayúscula.
-        * Contener al menos un número.
-        * Incluir al menos un carácter especial.
-        `
-      );
-      return; // Detenemos la ejecución si hay un error
+  const handleRegistro = async () => {
+    try {
+      await registrarUsuario(nombre, password);
+    } catch (error) {
+      console.error(error);
     }
+  };
+  
+  const handleLogin = () => {
+   // const isPasswordValid = validarContraseña(password);
+   // if (!isPasswordValid) {
+   //   setPasswordError(
+   //     `La contraseña debe cumplir los siguientes requisitos:
+   //     * Contener al menos 8 caracteres.
+   //     * Incluir al menos una letra minúscula.
+   //     * Incluir al menos una letra mayúscula.
+   //     * Contener al menos un número.
+   //     * Incluir al menos un carácter especial.
+   //     `
+   //   );
+   //   return; // Detenemos la ejecución si hay un error
+   // }
 
     // Si la contraseña es válida, limpia el error y navega
+    setUsuario(nombre)
     setPasswordError('');
     navigation.navigate('Home');
   };
@@ -43,7 +60,7 @@ export default function Login({ navigation }) {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : null}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
       style={{ flex: 1 }}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -58,18 +75,29 @@ export default function Login({ navigation }) {
                 <Text fontSize="6xl" fontFamily="body">Hola</Text>
 
                 <Box width="100%">
-                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Nombre</Text>
+                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Gmail</Text>
                   <Input
                     variant="underlined"
-                    placeholder="Nombre"
-                    value={nombre}
-                    onChangeText={setNombre}
+                    placeholder="Gmail"
+                    value={gmail}
+                    onChangeText={setGmail}
                     width="100%"
                     fontFamily="heading"
                     mt={2}
                   />
                 </Box>
-
+                <Box width="100%">
+                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Nombre</Text>
+                  <Input
+                    variant="underlined"
+                    placeholder="Nombre"
+                    value={nombre}
+                    onChangeText={setNombreInput}
+                    width="100%"
+                    fontFamily="heading"
+                    mt={2}
+                  />
+                </Box>
                 <Box width="100%">
                   <Text fontSize="lg" textAlign="center" fontFamily="heading">Contraseña</Text>
                   <Input
@@ -104,8 +132,14 @@ export default function Login({ navigation }) {
                 <Button onPress={handleLogin} width="100%" variant="outline" colorScheme="blue">
                   Iniciar sesión
                 </Button>
+                <Button onPress={handleRegistro}  width="100%" variant="outline" colorScheme="pink">
+                  Registrarse
+                </Button>
               </VStack>
             </Box>
+            <Button  variant={"solid"} borderRadius={"full"} colorScheme={"red"}>
+              <AntDesign name="google" size={24} color="white" />
+            </Button>
           </Box>
         </ScrollView>
       </TouchableWithoutFeedback>

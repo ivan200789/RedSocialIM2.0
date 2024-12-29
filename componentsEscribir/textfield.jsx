@@ -1,16 +1,24 @@
 import { useState } from "react"
-import { Text, TextInput, View, TouchableOpacity, Button, StyleSheet, ScrollView} from "react-native"
+import {  TextInput, TouchableOpacity, StyleSheet, ScrollView} from "react-native"
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
 import { Permissions } from 'expo';
 import { Entypo } from '@expo/vector-icons';
+import { Box, Input, Text, Button, VStack, Pressable } from "native-base";
+import { useAppContext } from "../Context/StateComp";
 
 export default function textfield(){
     const [text, setText] = useState("")
     const [selectedImage, setSelectedImage] = useState(null);
-    
-    
-    
+    const { setPosteo, Posteo } = useAppContext();
 
+    const subirPublicacion = () => {
+        if (text.length > 1 && text.length < 300) {
+            setPosteo(text); 
+            console.log(text)
+        } else {
+            alert('El texto debe tener entre 1 y 300 caracteres.');
+        }
+    };
     return(
         <ScrollView style={{
             marginTop:"auto",
@@ -31,28 +39,27 @@ export default function textfield(){
                 marginTop:10,
                 borderColor: "#000",
             }} 
-            //value={text}
-            placeholder="Escriba su mensaje aquí..."
+            onChangeText={setText}
+            value={text}
+            placeholder="Escriba su mensaje aquí...."
             />
-              <View style={style.camContainer}>
+              <Box style={style.camContainer}>
                 <TouchableOpacity style={style.camgaleria}>
                     <Entypo name="camera" size={38} color="black" style={{textAlign:"center"}} />
                 </TouchableOpacity>
                 <TouchableOpacity style={style.camgaleria}>
                     <Entypo name="images" size={38} color="black" style={{textAlign:"center"}} />
                 </TouchableOpacity>
-            </View>
-            <TouchableOpacity style={{backgroundColor:"#009688", height:55, width:"96%", marginHorizontal:"2%",  borderRadius:6, marginTop:10}} >
-             
-                <Text style={{
-                    fontSize: 18,
-                    fontWeight: "700",
-                    textAlign:"center",
-                    margin:"auto",
-                    color:"#fff" 
-                }}>
-                Publicar</Text>
-            </TouchableOpacity>
+            </Box>
+            <Button 
+                onPress={subirPublicacion} 
+                colorScheme={"violet"} 
+                width={340} 
+                marginTop={"1"} 
+                margin="auto"
+            >
+              Publicar
+            </Button>
           
         </ScrollView>   
 

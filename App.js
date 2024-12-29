@@ -12,6 +12,7 @@ import Escribir from './pantallas/Escribir';
 import BuscadorScreen from './pantallas/Buscador';
 import HomeScreen from './pantallas/Home';
 import Login from './pantallas/Login';
+import { AppContextProvider } from './Context/StateComp';
 
 
 // Impide que la splash screen se oculte automáticamente
@@ -20,6 +21,8 @@ SplashScreen.preventAutoHideAsync();
 const Stack = createStackNavigator(); // Creamos el Stack Navigator
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
 
   const [isReady, setIsReady] = useState(false);
 
@@ -50,14 +53,15 @@ export default function App() {
   }
 
   return (
+    <AppContextProvider>
     <NativeBaseProvider theme={theme}>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login"> 
-        <Stack.Screen name="Login" component={Login}  options={{ headerShown: false }}  /> 
-        <Stack.Screen name="Home" component={HomeScreen}  options={{ headerShown: false }}  /> 
-        <Stack.Screen name="Escribir" component={Escribir}  options={{ headerShown: false }} /> 
-      </Stack.Navigator>
+        <Stack.Navigator initialRouteName={isAuthenticated ? 'Home' : 'Login'}>
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
+        </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
+  </AppContextProvider>
   );
 }

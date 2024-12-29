@@ -12,10 +12,11 @@ export const theme = extendTheme({
     md: 16,
     lg: 20,
     xl: 30,
+    xxl:40,
   },
   colors:{
     secondary_400:"#f472b6",
-    
+    googleRed:"#F4B400"
 
   }
 

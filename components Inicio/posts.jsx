@@ -1,41 +1,32 @@
 import React from 'react';
-import {  StyleSheet, Image, ImageComponent } from 'react-native';
-import { Button, Center, Text, View } from 'native-base';
-import { useAppContext } from '../Context/StateComp';
-
+import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { useAppContext } from '../Context/StateComp'; // Asegúrate de que la ruta sea correcta
 import AntDesign from '@expo/vector-icons/AntDesign';
 
-const posts = () => {
-  const { Usuario, Posteo } = useAppContext
-  ();
-  
+const Posts = () => {
+  const { Usuario, Posteo } = useAppContext();
+
   return (
-    <View style={styles.container} marginLeft={"1"}>
-      <Text fontFamily="mono" marginLeft={"1"} fontSize="lg">Últimos Posts</Text>
+    <View style={styles.container}>
+      <Text style={styles.posts}>Últimos Posts</Text>
 
-      <View shadow={"2"} backgroundColor={"muted.50"} width="95%" height={"auto"} marginX={"auto"} marginTop={"3.5"} borderRadius={"2xl"}>
-        <Text textAlign={"center"} fontSize={"lg"}>{Usuario}</Text>
-        <Text textAlign={"left"} marginTop={"2"} fontSize={"sm"} fontFamily={"heading"} marginLeft={"2"} m>{Posteo}</Text>
+      <View style={styles.postContainer}>
+        <Text style={styles.username}>{Usuario}</Text>
+        <Text style={styles.postText}>{Posteo}</Text>
+
         <Image 
-          source={require("../assets/Mendoza.jpeg")} // Usa require para imágenes locales
-
-          alt="Alternate Text" 
-          style={{ width: "98%", height: 120, margin:"auto", borderRadius:10, }} // Especifica un tamaño para que se muestre
+          source={require("../assets/Mendoza.jpeg")}  // Usa require para imágenes locales
+          style={styles.image}
         />
 
-        <Button 
-          variant={"unstyled"}
-          marginTop={"2/7"}
-          marginX={"auto"}
-          _pressed={{ backgroundColor: "red.600" }} 
-          borderRadius="full" 
-          padding={3} 
-          shadow={2} // Agrega una sombra sutil
-          width={"1/3"}
+        <Button
+          title=""
+          onPress={() => {}}
+          color="red"
+          style={styles.likeButton}
         >
-            <AntDesign name="heart" size={24} color="white" />
+          <AntDesign name="heart" size={24} color="white" />
         </Button>
-
       </View>
     </View>
   );
@@ -44,33 +35,52 @@ const posts = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    
-   
+    marginLeft: 10,
   },
   posts: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  posteos: {
-    width: '100%',
-    
-  },
-  
-  avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-  },
-  nombres: {
     fontSize: 18,
     fontWeight: 'bold',
-    textAlign:"center"
+    marginLeft: 10,
+    marginBottom: 10,
   },
-  photo: {
-    width: 100,
-    height: 100,
+  postContainer: {
+    backgroundColor: '#f4f4f4',
+    width: '95%',
+    marginHorizontal: 'auto',
+    marginTop: 14,
+    borderRadius: 15,
+    padding: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, // Para Android
+  },
+  username: {
+    textAlign: 'center',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  postText: {
+    textAlign: 'left',
+    fontSize: 14,
+    marginTop: 10,
+  },
+  image: {
+    width: '98%',
+    height: 120,
+    marginHorizontal: 'auto',
+    borderRadius: 10,
+    marginTop: 10,
+  },
+  likeButton: {
+    alignSelf: 'center',
+    marginTop: 20,
+    backgroundColor: 'red',
+    borderRadius: 50,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 
-export default posts;
+export default Posts;

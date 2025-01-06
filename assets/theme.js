@@ -1,23 +1,25 @@
-import { extendTheme } from 'native-base';
+// theme.js
+import { DefaultTheme } from 'react-native-paper';
 
-export const theme = extendTheme({
+export const theme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    primary: '#3498db',   // Azul
+    accent: '#e74c3c',    // Rojo
+    background: '#f5f5f5', // Gris claro
+    surface: '#ffffff',    // Blanco
+    text: '#2c3e50',      // Gris oscuro
+  },
   fonts: {
-    heading: 'Roboto',
-    body: 'Roboto_bold',
-    mono: 'Roboto_medium',
+    regular: {
+      fontFamily: 'Roboto', // Asegúrate de tener esta fuente disponible
+      fontWeight: 'normal',
+    },
+    medium: {
+      fontFamily: 'Roboto-Medium',
+      fontWeight: 'normal',
+    },
   },
-  fontSizes: {
-    xs: 12,
-    sm: 14,
-    md: 16,
-    lg: 20,
-    xl: 30,
-    xxl:40,
-  },
-  colors:{
-    secondary_400:"#f472b6",
-    googleRed:"#F4B400"
-
-  }
-
-});
+  roundness: 2, // Bordes redondeados de los botones y tarjetas
+};

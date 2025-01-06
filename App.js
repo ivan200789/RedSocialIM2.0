@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { NativeBaseProvider } from 'native-base';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
-import { theme } from './assets/theme';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import TabNavigator from './pantallas/Tab';
@@ -13,11 +11,12 @@ import BuscadorScreen from './pantallas/Buscador';
 import HomeScreen from './pantallas/Home';
 import Login from './pantallas/Login';
 import { AppContextProvider } from './Context/StateComp';
+import Registrar from './pantallas/Registrar';
 
+import { theme } from './assets/theme';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 // Impide que la splash screen se oculte automáticamente
-SplashScreen.preventAutoHideAsync();
-
 const Stack = createStackNavigator(); // Creamos el Stack Navigator
 
 export default function App() {
@@ -54,14 +53,18 @@ export default function App() {
 
   return (
     <AppContextProvider>
-    <NativeBaseProvider theme={theme}>
+      <PaperProvider>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={isAuthenticated ? 'Home' : 'Login'}>
+        <Stack.Navigator initialRouteName='Login'>
           <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Registrar" component={Registrar} options={{ headerShown: false }} />
+
           <Stack.Screen name="Home" component={TabNavigator} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
-    </NativeBaseProvider>
+
+      </PaperProvider>
+
   </AppContextProvider>
   );
 }

@@ -1,148 +1,253 @@
-import React, { useState, useContext } from "react";
-import { Box, Input, Text, Button, VStack, Pressable, HStack, CheckIcon, Alert } from "native-base";
-import Wave from "../assets/Wave"; // Asegúrate de que la ruta a la ola sea correcta
+import React, { useState, useEffect } from "react";
 import {
   Platform,
   KeyboardAvoidingView,
   ScrollView,
   Keyboard,
   TouchableWithoutFeedback,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
 } from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import { useAppContext } from "../Context/StateComp"; // Asegúrate de que la ruta es correcta
-import AntDesign from '@expo/vector-icons/AntDesign';
+import Wave from "../assets/Wave"; // Asegúrate de que la ruta es correcta
+import { supabase } from "../Supabase/supabase";
+import { theme } from "../assets/theme";
+import { Button } from 'react-native-paper';
 
-import { registrarUsuario } from "../firebase/firebase";
+
 
 export default function Login({ navigation }) {
-
-  const {setUsuario } = useAppContext(); 
-  const [nombre, setNombreInput] = useState('');  
-
-  const [gmail, setGmail] = useState('');  
-
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
+  const { setUsuario } = useAppContext();
+  const [nombre, setNombreInput] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleRegistro = async () => {
-    try {
-      await registrarUsuario(nombre, password);
-    } catch (error) {
-      console.error(error);
-    }
+  const registrar = () => {
+    navigation.navigate("Registrar");
   };
-  
-  const handleLogin = () => {
-   // const isPasswordValid = validarContraseña(password);
-   // if (!isPasswordValid) {
-   //   setPasswordError(
-   //     `La contraseña debe cumplir los siguientes requisitos:
-   //     * Contener al menos 8 caracteres.
-   //     * Incluir al menos una letra minúscula.
-   //     * Incluir al menos una letra mayúscula.
-   //     * Contener al menos un número.
-   //     * Incluir al menos un carácter especial.
-   //     `
-   //   );
-   //   return; // Detenemos la ejecución si hay un error
-   // }
 
-    // Si la contraseña es válida, limpia el error y navega
-    setUsuario(nombre)
-    setPasswordError('');
-    navigation.navigate('Home');
+  const logearse = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("Usuarios")
+        .select("*")
+        .eq("Usuario", nombre)  // Busca el usuario ingresado
+        .maybeSingle();  // Devuelve un único valor o null si no se encuentra nada
+    
+      if (error) {
+        console.error(error);
+        return; // Si hay error (usuario no encontrado), no hacemos nada
+      }
+    
+      if (!data) {
+        console.log("Usuario no encontrado");
+        setPasswordError("Usuario no encontrado");
+        return; // Si no se encuentra el usuario
+      }
+    
+      // Verificar si la contraseña ingresada es correcta
+      if (data.Contraseña === password) {
+        setUsuario(nombre); // Establecer el usuario en el contexto
+        navigation.navigate("Home"); // Navegar a la pantalla de inicio
+      } else {
+        setPasswordError("Contraseña incorrecta");
+        console.log(passwordError);
+      }
+    } catch (error) {
+      console.error("Error inesperado:", error);
+    }
+    
+  };
+
+  const handleLogin = () => {
+    setUsuario(nombre);
+    setPasswordError("");
+    navigation.navigate("Home");
   };
 
   const validarContraseña = (password) => {
-    const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const regex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
     return regex.test(password);
   };
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : undefined}
-      style={{ flex: 1 }}
+      style={styles.container}
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView contentContainerStyle={{ flexGrow: 1 }} keyboardShouldPersistTaps="handled">
-          <Box flex={1} alignItems="center" justifyContent="center" bg="white" p={0}>
-            <Box position="absolute" bottom="0" top="0" left="0" width="100%" height="100%">
-              <Wave />
-            </Box>
+        <ScrollView contentContainerStyle={styles.scrollContainer}>
+          <View style={styles.waveContainer}>
+            <Wave color1="#bb8fce" color2="#2980b9" />
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.title}>Hola</Text>
 
-            <Box width="90%" borderRadius="lg" p={4} zIndex={1} mt={40}>
-              <VStack space={5} alignItems="center">
-                <Text fontSize="6xl" fontFamily="body">Hola</Text>
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Usuario</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Usuario"
+                value={nombre}
+                onChangeText={setNombreInput}
+              />
+            </View>
 
-                <Box width="100%">
-                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Gmail</Text>
-                  <Input
-                    variant="underlined"
-                    placeholder="Gmail"
-                    value={gmail}
-                    onChangeText={setGmail}
-                    width="100%"
-                    fontFamily="heading"
-                    mt={2}
-                  />
-                </Box>
-                <Box width="100%">
-                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Nombre</Text>
-                  <Input
-                    variant="underlined"
-                    placeholder="Nombre"
-                    value={nombre}
-                    onChangeText={setNombreInput}
-                    width="100%"
-                    fontFamily="heading"
-                    mt={2}
-                  />
-                </Box>
-                <Box width="100%">
-                  <Text fontSize="lg" textAlign="center" fontFamily="heading">Contraseña</Text>
-                  <Input
-                    variant="underlined"
-                    placeholder="Contraseña"
-                    value={password}
-                    onChangeText={(text) => {
-                      setPassword(text);
-                      if (passwordError) {
-                        setPasswordError(''); // Limpia el error mientras escribe
-                      }
-                    }}
-                    secureTextEntry={!showPassword}
-                    width="100%"
-                    fontFamily="heading"
-                    mt={2}
-                    InputRightElement={
-                      <Pressable onPress={() => setShowPassword(!showPassword)} style={{ padding: 8 }}>
-                        <Text fontSize="xs" fontFamily="heading" color="cyan.600">
-                          {showPassword ? "Ocultar" : "Mostrar"}
-                        </Text>
-                      </Pressable>
-                    }
-                  />
-                  {passwordError && (
-                    <Text fontFamily="mono" fontSize="sm" color="danger.500">
-                      {passwordError}
-                    </Text>
-                  )}
-                </Box>
-
-                <Button onPress={handleLogin} width="100%" variant="outline" colorScheme="blue">
-                  Iniciar sesión
-                </Button>
-                <Button onPress={handleRegistro}  width="100%" variant="outline" colorScheme="pink">
-                  Registrarse
-                </Button>
-              </VStack>
-            </Box>
-            <Button  variant={"solid"} borderRadius={"full"} colorScheme={"red"}>
-              <AntDesign name="google" size={24} color="white" />
+            <View style={styles.inputContainer}>
+              <Text style={styles.label}>Contraseña</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Contraseña"
+                value={password}
+                onChangeText={(text) => {
+                  setPassword(text);
+                  if (passwordError) {
+                    setPasswordError(""); // Limpia el error mientras escribe
+                  }
+                }}
+                secureTextEntry={!showPassword}
+              />
+              <TouchableOpacity
+                onPress={() => setShowPassword(!showPassword)}
+                style={styles.showPassword}
+              >
+                <Text style={styles.showPasswordText}>
+                  {showPassword ? "Ocultar" : "Mostrar"}
+                </Text>
+              </TouchableOpacity>
+              {passwordError && (
+                <Text style={styles.errorText}>{passwordError}</Text>
+              )}
+            </View>
+            
+            <Button 
+              buttonColor="#bb8fce"
+              textColor="white"
+              mode="contained"
+              onPress={logearse}
+              style={{
+                width: '100%',            // Hace el botón más ancho (ocupa el ancho completo del contenedor)
+                paddingVertical: 10,      // Ajusta el alto del botón (si lo deseas)
+              }}
+            >
+            
+             Iniciar sesión
             </Button>
-          </Box>
+            <TouchableOpacity onPress={registrar} style={styles.registerButton}>
+              <Text style={styles.registerText}>
+                ¿Aún no tienes cuenta? Presióname para registrarte
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity  style={ styles.googleButton}>
+              <AntDesign name="google" size={24} color="white" />
+            </TouchableOpacity>
+  
+          </View>
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+  },
+  waveContainer: {
+    position: "absolute",
+    bottom: 0,
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+  },
+  content: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    marginTop: 40,
+  },
+  title: {
+    fontSize: 66,
+    fontWeight: "bold",
+    color: "#000",
+    marginBottom: 24,
+  },
+  inputContainer: {
+    width: "100%",
+    marginBottom: 16,
+  },
+  label: {
+    textAlign:"center",
+    fontSize: 18,
+    color: "#333",
+    marginBottom: 8,
+  },
+  input: {
+    width: "100%",
+    borderBottomWidth: 1,
+    borderBottomColor: "#ccc",
+    fontSize: 16,
+    paddingVertical: 8,
+    color: "#000",
+  },
+  showPassword: {
+    position: "absolute",
+    right: 0,
+    bottom: 10,
+  },
+  showPasswordText: {
+    fontSize: 14,
+    color: "#2980b9",
+  },
+  errorText: {
+    fontSize: 14,
+    color: "#e74c3c",
+    marginTop: 8,
+  },
+  button: {
+    width: "100%",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 16,
+  },
+  loginButton: {
+    backgroundColor: "#2980b9",
+  },
+  googleButton: {
+    marginTop:10,
+    width: 55,
+    height:55,
+    alignItems: "center",
+    textAlign:"center",
+    justifyContent:"center",
+    backgroundColor: "#e74c3c",
+    borderRadius:100,
+  },
+  registerButton: {
+    backgroundColor: "transparent",
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  registerText: {
+    color:"#ec407a",
+    fontSize: 15,
+    textAlign: "center",
+    marginTop:3,
+  },
+});

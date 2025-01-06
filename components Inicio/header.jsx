@@ -1,46 +1,38 @@
 import React from 'react';
-import { StyleSheet, Platform, StatusBar } from 'react-native';
-import { Box, Text } from 'native-base';
+import { StyleSheet, Text, View, Platform } from 'react-native';
 
 const Header = ({ title }) => {
   return (
-    <Box style={styles.header}>
-      <Text 
-        color="black" 
-        fontSize="4xl" 
-        fontWeight="bold" 
-        style={styles.text} 
-        numberOfLines={1} 
-        ellipsizeMode="tail" 
-      > 
-        {title} 
+    <View style={styles.header}>
+      <Text style={styles.text} numberOfLines={1} ellipsizeMode="tail">
+        {title}
       </Text>
-    </Box>
+    </View>
   );
 };
-
-// ... (código existente)
 
 const styles = StyleSheet.create({
   header: {
     justifyContent: 'center',
+    alignItems: 'center', // Para centrar el texto horizontalmente
     height: 75,
-    backgroundColor: '#fff', // Fondo gris claro
-    borderBottomColor: '#d0d3d4', // Línea divisoria gris más claro
-    shadowColor: '#000', // Sombra negra
+    backgroundColor: '#fff',
+    borderBottomColor: '#d0d3d4',
+    borderBottomWidth: 1, // Establecer el borde inferior
+    shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    borderRadius: 15,
     elevation: 5, // Para Android
-    paddingHorizontal: 20, // Agrega espacio horizontal interno
-    marginBottom: 10, // Agrega espacio inferior
+    paddingHorizontal: 20,
+    marginBottom: 10,
+    borderRadius: 15, // Redondear las esquinas
   },
   text: {
-    marginTop:8,
-    textAlign:"center",
-    fontFamily: 'Montserrat', // Cambia la fuente
+    textAlign: 'center',
+    fontFamily: 'Montserrat', // Asegúrate de tener esta fuente en tu proyecto
     fontSize: 28,
+    fontWeight: 'bold',
   },
 });
 

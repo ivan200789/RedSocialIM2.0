@@ -1,30 +1,25 @@
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import Header from "../components Inicio/header"
+import { StyleSheet, View, Text } from 'react-native';
+import Header from "../components Inicio/header";
 import { useAppContext } from '../Context/StateComp'; // Asegúrate de que la ruta es correcta
-import { NativeBaseProvider, Text, View } from 'native-base';
 import Posts from '../components Inicio/posts';
 import { theme } from '../assets/theme';
+
 const HomeScreen = () => {
   const { Usuario } = useAppContext();
 
   return (
-    <NativeBaseProvider theme={theme}>
-      <View style={styles.container}>
-        <Header title={"Mockups"}/>
-        
-        <View style={{marginTop:0}}>
-          <Text fontSize="xxl" fontFamily="body" color="black" marginLeft="1.5">
-            {`Hola, ${Usuario}`}
-          </Text>
-        </View>
-        <Posts/>
-        
-        
+    <View style={styles.container}>
+      <Header title={"Mockups"} />
+      
+      <View style={{ marginTop: 0 }}>
+        <Text style={styles.greetingText}>
+          {`Hola, ${Usuario}`}
+        </Text>
       </View>
-
-    </NativeBaseProvider>
-
+      
+      <Posts />
+    </View>
   );
 };
 
@@ -33,6 +28,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     marginTop: 0,
+  },
+  greetingText: {
+    fontSize: 34,        // equivalente a 'xxl' en NativeBase
+    fontFamily: 'System', // Usa la fuente predeterminada del sistema
+    color: 'black',
+    fontWeight:"bold",
+    marginLeft: 10,      // equivalente a 'marginLeft="1.5"' en NativeBase
   },
 });
 

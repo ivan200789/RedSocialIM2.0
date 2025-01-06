@@ -2,7 +2,7 @@ import React from 'react';
 import { Dimensions } from 'react-native';
 import Svg, { Path, Defs, LinearGradient, Stop } from 'react-native-svg';
 
-const Wave = () => {
+const Wave = ({color1, color2}) => {
     // Obtener el 60% de la altura de la pantalla (puedes ajustar este porcentaje)
     const screenHeight = Dimensions.get('window').height;
     const waveHeight = screenHeight * 0.6; // 60% de la altura de la pantalla
@@ -11,8 +11,8 @@ const Wave = () => {
         <Svg xmlns="http://www.w3.org/2000/svg" viewBox={`0 0 1440 ${waveHeight}`} height={waveHeight - 290}>
             <Defs>
                 <LinearGradient id="grad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <Stop offset="0%" stopColor="#0099ff" stopOpacity="1" />
-                    <Stop offset="100%" stopColor="#ff66cc" stopOpacity="1" />
+                    <Stop offset="0%" stopColor={color1} stopOpacity="1" />
+                    <Stop offset="100%" stopColor={color2} stopOpacity="1" />
                 </LinearGradient>
             </Defs>
             <Path 

@@ -1,89 +1,115 @@
-import { useState } from "react"
-import {  TextInput, TouchableOpacity, StyleSheet, ScrollView} from "react-native"
+import React, { useState } from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { launchImageLibrary, launchCamera } from 'react-native-image-picker';
-import { Permissions } from 'expo';
-import { Entypo } from '@expo/vector-icons';
-import { Box, Input, Text, Button, VStack, Pressable } from "native-base";
-import { useAppContext } from "../Context/StateComp";
+import { IconButton, TextInput, Button } from 'react-native-paper'; // Importamos componentes de React Native Paper
+import { useAppContext } from "../Context/StateComp"; // Importa el contexto
 
-export default function textfield(){
-    const [text, setText] = useState("")
-    const [selectedImage, setSelectedImage] = useState(null);
-    const { setPosteo, Posteo } = useAppContext();
+export default function TextField() {
+    const [text, setText] = useState(""); // Estado para el texto
+    const [selectedImage, setSelectedImage] = useState(null); // Estado para la imagen seleccionada
+    const { setPosteo, Posteo } = useAppContext(); // Obtener funciones del contexto
 
     const subirPublicacion = () => {
         if (text.length > 1 && text.length < 300) {
             setPosteo(text); 
-            console.log(text)
+            console.log(text);
         } else {
             alert('El texto debe tener entre 1 y 300 caracteres.');
         }
     };
-    return(
-        <ScrollView style={{
-            marginTop:"auto",
-            backgroundColor: "#fff",
-            height:"100%"
-        }}>
-            <Text style={{fontSize: 20, fontWeight: "600", marginLeft:10, marginTop:15}}>¿En qué estas pensando?</Text>
-            <TextInput 
-            style={{
-                backgroundColor:"#fff",
-                marginHorizontal:"2%",
-                width: "96%",
-                height: 55,
-                paddingHorizontal: 10,
-                borderRadius: 4,
-                fontSize: 16,
-                borderWidth:1,
-                marginTop:10,
-                borderColor: "#000",
-            }} 
-            onChangeText={setText}
-            value={text}
-            placeholder="Escriba su mensaje aquí...."
+
+    const seleccionarImagen = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+            if (response.didCancel) {
+                console.log('El usuario canceló la selección de la imagen');
+            } else if (response.errorCode) {
+                console.log('Error: ', response.errorMessage);
+            } else {
+                setSelectedImage(response.assets[0]);
+            }
+        });
+    };
+
+    const tomarFoto = () => {
+        launchCamera({ mediaType: 'photo' }, (response) => {
+            if (response.didCancel) {
+                console.log('El usuario canceló la cámara');
+            } else if (response.errorCode) {
+                console.log('Error: ', response.errorMessage);
+            } else {
+                setSelectedImage(response.assets[0]);
+            }
+        });
+    };
+
+    return (
+        <ScrollView style={styles.scrollView}>
+            <Text style={styles.textTitle}>¿En qué estás pensando?</Text>
+            <TextInput
+                style={styles.textInput}
+                onChangeText={setText}
+                value={text}
+                placeholder="Escribe tu mensaje aquí...."
+                mode="outlined"
+                multiline
             />
-              <Box style={style.camContainer}>
-                <TouchableOpacity style={style.camgaleria}>
-                    <Entypo name="camera" size={38} color="black" style={{textAlign:"center"}} />
-                </TouchableOpacity>
-                <TouchableOpacity style={style.camgaleria}>
-                    <Entypo name="images" size={38} color="black" style={{textAlign:"center"}} />
-                </TouchableOpacity>
-            </Box>
-            <Button 
-                onPress={subirPublicacion} 
-                colorScheme={"violet"} 
-                width={340} 
-                marginTop={"1"} 
-                margin="auto"
+            <View style={styles.camContainer}>
+                <IconButton
+                    icon="camera"
+                    size={38}
+                    onPress={tomarFoto}
+                    style={styles.iconButton}
+                />
+                <IconButton
+                    icon="image"
+                    size={38}
+                    onPress={seleccionarImagen}
+                    style={styles.iconButton}
+                />
+            </View>
+            <Button
+                mode="contained"
+                onPress={subirPublicacion}
+                style={styles.publishButton}
             >
-              Publicar
+                Publicar
             </Button>
-          
-        </ScrollView>   
-
-    )
+        </ScrollView>
+    );
 }
-const style = StyleSheet.create({
-    camContainer:{
-        display:"flex",
-        flexDirection:"row",
-        width:"96%",
-        margin:"auto",
-        marginTop:10,
+
+const styles = StyleSheet.create({
+    scrollView: {
+        marginTop: "auto",
+        backgroundColor: "#fff",
+        height: "100%",
+        padding: 10,
     },
-    camgaleria:{
-        width:"48%",
-        height:70,
-        borderRadius:6,
-        justifyContent:"center",
-        backgroundColor:"#ddd",
-        marginHorizontal:"auto"
+    textTitle: {
+        fontSize: 20,
+        fontWeight: "600",
+        marginTop: 15,
+    },
+    textInput: {
+        marginTop: 10,
+        height: 100, // Se ajusta el tamaño para que sea un área más grande
+        paddingVertical: 10, // Agrega espacio interno
+    },
+    camContainer: {
+        flexDirection: "row", // Asegura que los iconos estén en una fila
+        justifyContent: "space-between", // Alinea los iconos a lo largo del eje horizontal
+        marginTop: 10,
+        width: "96%",
+        alignSelf: "center", // Centra el contenedor
+    },
+    iconButton: {
+        backgroundColor: "#ddd",
+        borderRadius: 6,
+        marginHorizontal: 10, // Agrega espacio entre los iconos
+    },
 
-
-        //padding:10,
-        //marginHorizontal:3,
-   
-    }
-})
+    publishButton: {
+        marginTop: 15,
+        width: "100%",
+    },
+});
